@@ -9,7 +9,7 @@ class NewVisitorTest(unittest.TestCase):
         self.browser = webdriver.Firefox()
 
     def tearDown(self):
-        self. browser.quit()
+        self.browser.quit()
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         #Edith has heard about a cool app and visits it.
@@ -34,16 +34,25 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(any(row.text == '1: Buy peacock feathers' for row in rows), "New to-do item did not aappear in table")
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
 
         #There is still a text box inviting her to add another item.  She enters:
         #"Use peacock feathers to make a fly"
-        self.fail('Finish the test')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Use peacock feathers to make a fly')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
 
         #The page updates again, and now shows both items on the list
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+        self.assertIn('2: Use peacock feathers to make a fly', [row.text for row in rows])
+
 
         #Edith sees that the site generates a unique URL for her--with
         #some explanatory text to that effect.
+        self.fail('Finish the test')
 
         #She visits that URL, and her list is still there
 
